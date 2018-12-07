@@ -1,0 +1,7 @@
+# ninja log v5
+0	1209	1544164846	CMakeFiles/IGA.dir/main.cpp.o	d8685d4fde0fd625
+1210	1273	1544164846	IGA	4d1009b7c0d1f1f3
+0	18	1544166095	build.ninja	84f36080dd5e6b0d
+1	13	1544166095	matrix/CMakeFiles/matrix_lib.dir/src/igaMatrix.cpp.o	78553997278ca714
+13	19	1544166095	matrix/libmatrix_lib.a	a1d3df2fb8883a72
+19	86	1544166095	IGA	83bc52462a0e6569

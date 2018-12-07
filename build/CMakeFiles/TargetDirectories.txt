@@ -1,0 +1,6 @@
+/home/miaodi/iga/build/CMakeFiles/rebuild_cache.dir
+/home/miaodi/iga/build/CMakeFiles/edit_cache.dir
+/home/miaodi/iga/build/CMakeFiles/IGA.dir
+/home/miaodi/iga/build/matrix/CMakeFiles/rebuild_cache.dir
+/home/miaodi/iga/build/matrix/CMakeFiles/edit_cache.dir
+/home/miaodi/iga/build/matrix/CMakeFiles/matrix_lib.dir
