@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 project(IGA)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -pedantic -Wextra")
+set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
 
 message("Generator is set to ${CMAKE_GENERATOR}")
 
@@ -13,9 +15,11 @@ endif()
 
 
 set(EIGEN_INC_DIR ${PROJECT_SOURCE_DIR}/deps/eigen)
+set(CONFIGURATION_INC_DIR ${PROJECT_SOURCE_DIR}/configuration)
 message("Eigen is found in ${EIGEN_INC_DIR}")
-set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR})
+set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR} ${CONFIGURATION_INC_DIR})
 set(IGA_LIBS matrix_lib)
+
 include_directories(${IGA_INCLUDE_DIRS})
 
 add_subdirectory(matrix)
