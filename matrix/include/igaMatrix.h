@@ -3,12 +3,37 @@
 #include <Eigen/Dense>
 #include <accessory_func.h>
 #include <config.h>
+#include <iomanip>
+#include <iostream>
 #include <memory>
+
+#define NOT_IMPLEMENTED                                                                                   \
+    {                                                                                                     \
+        std::stringstream _m_;                                                                            \
+        _m_ << "NOT IMPLEMENTED: " << __FUNCTION__ << " in " << __FILE__ << ", line " << __LINE__ << "\n" \
+            << typeid( *this ).name();                                                                    \
+        throw std::runtime_error( _m_.str() );                                                            \
+    }
+
 namespace matrix
 {
 using namespace Eigen;
 using namespace std;
 using namespace accessory;
+
+template <typename T>
+struct removeNoise_helper
+{
+    removeNoise_helper( const T& tol ) : mTol( tol )
+    {
+    }
+
+    T mTol;
+    T operator()( const T& val ) const
+    {
+        return abs( val ) > mTol ? val : 0;
+    }
+};
 
 // default colmajor
 template <class T, int _Rows = Eigen::Dynamic, int _Cols = Eigen::Dynamic, int _Options = 0 | ( ( _Rows == 1 && _Cols != 1 ) ? 0x1 : 0 )>
@@ -60,6 +85,14 @@ public:
     {
     }
 
+    igaMatrix( const Base& a ) : Base( a )
+    {
+    }
+
+    igaMatrix( int rows, int cols ) : Base( rows, cols )
+    {
+    }
+
     /// This constructor allows constructing a gsMatrix from Eigen expressions
     template <typename OtherDerived>
     igaMatrix( const Eigen::EigenBase<OtherDerived>& other ) : Base( other )
@@ -80,7 +113,7 @@ public:
 
     // create submatrix from index container. !! now can be done by operator() directly
     template <typename IndexContainer>
-    void submatrix( const IndexContainer& rowInd, const IndexContainer& colInd, igaMatrix<T>& result ) const
+    void Submatrix( const IndexContainer& rowInd, const IndexContainer& colInd, igaMatrix<T>& result ) const
     {
         const index_t nr = rowInd.size();
         const index_t nc = colInd.size();
@@ -91,7 +124,7 @@ public:
     }
 
     // create a allocate a unique pointer and swap this matrix with it
-    uPtr moveToPtr()
+    uPtr MoveToPtr()
     {
         uPtr u_ptr( new igaMatrix );
         u_ptr->swap( *this );
@@ -105,7 +138,7 @@ public:
 
     // returns a submatrix consisting of the columns indexed by the vector container colInd
     template <class IndexContainer>
-    void submatrixCols( const IndexContainer& colInd, igaMatrix<T>& result ) const
+    void SubmatrixCols( const IndexContainer& colInd, igaMatrix<T>& result ) const
     {
         const index_t nc = colInd.size();
         result.resize( this->rows(), nc );
@@ -115,7 +148,7 @@ public:
 
     // returns a submatrix consisting of the rows indexed by the vector container rowInd
     template <class IndexContainer>
-    void submatrixRows( const IndexContainer& rowInd, igaMatrix<T>& result ) const
+    void SubmatrixRows( const IndexContainer& rowInd, igaMatrix<T>& result ) const
     {
         const index_t nr = rowInd.size();
         result.resize( nr, this->cols() );
@@ -123,7 +156,150 @@ public:
             result.row( i ) = this->row( rowInd[i] );
     }
 
-    
+    // returns a (m-1)*(n-1) matrix with i th row and j th col removed
+    void ColAndRowMinor( index_t i, index_t j, RowAndColMinorMatrixType& result ) const
+    {
+        const index_t mrows = this->rows() - 1, mcols = this->cols() - 1;
+        // GISMO_ASSERT( i <= mrows, "Invalid row." );
+        // GISMO_ASSERT( j <= mcols, "Invalid column." );
+        // result.resize( mrows, mcols );
+        result.block( 0, 0, i, j ) = this->block( 0, 0, i, j );
+        result.block( i, 0, mrows - i, j ) = this->block( i + 1, 0, mrows - i, j );
+        result.block( 0, j, i, mcols - j ) = this->block( 0, j + 1, i, mcols - j );
+        result.block( i, j, mrows - i, mcols - j ) = this->block( i + 1, j + 1, mrows - i, mcols - j );
+    }
+
+    template <typename DynamicMatrixType>
+    void ColAndRowMinor( index_t i, index_t j, DynamicMatrixType& result ) const
+    {
+        const index_t mrows = this->rows() - 1, mcols = this->cols() - 1;
+        // GISMO_ASSERT( i <= mrows, "Invalid row." );
+        // GISMO_ASSERT( j <= mcols, "Invalid column." );
+        result.resize( mrows, mcols );
+        result.block( 0, 0, i, j ) = this->block( 0, 0, i, j );
+        result.block( i, 0, mrows - i, j ) = this->block( i + 1, 0, mrows - i, j );
+        result.block( 0, j, i, mcols - j ) = this->block( 0, j + 1, i, mcols - j );
+        result.block( i, j, mrows - i, mcols - j ) = this->block( i + 1, j + 1, mrows - i, mcols - j );
+    }
+
+    //  return a (m-1)*n matrix with the i th row removed
+    void RowMinor( index_t i, RowMinorMatrixType& result ) const
+    {
+        const index_t mrows = this->rows() - 1;
+        // GISMO_ASSERT( i <= mrows, "Invalid row." );
+        // result.resize( mrows, this->cols() );
+        result.topRows( i ) = this->topRows( i );
+        result.bottomRows( mrows - i ) = this->bottomRows( mrows - i );
+    }
+
+    template <typename DynamicMatrixType>
+    void RowMinor( index_t i, DynamicMatrixType& result ) const
+    {
+        const index_t mrows = this->rows() - 1;
+        // GISMO_ASSERT( i <= mrows, "Invalid row." );
+        result.resize( mrows, this->cols() );
+        result.topRows( i ) = this->topRows( i );
+        result.bottomRows( mrows - i ) = this->bottomRows( mrows - i );
+    }
+
+    //  return a m*(n-1) matrix with the j th col removed
+    void ColMinor( index_t j, ColMinorMatrixType& result ) const
+    {
+        const index_t mcols = this->cols() - 1;
+        // GISMO_ASSERT( j <= mcols, "Invalid column." );
+        // result.resize( this->rows(), mcols );
+        result.leftCols( j ) = this->leftCols( j );
+        result.rightCols( mcols - j ) = this->rightCols( mcols - j );
+    }
+
+    template <typename DynamicMatrixType>
+    void ColMinor( index_t j, DynamicMatrixType& result ) const
+    {
+        const index_t mcols = this->cols() - 1;
+        // GISMO_ASSERT( j <= mcols, "Invalid column." );
+        result.resize( this->rows(), mcols );
+        result.leftCols( j ) = this->leftCols( j );
+        result.rightCols( mcols - j ) = this->rightCols( mcols - j );
+    }
+
+    void duplicateRow( index_t k )
+    {
+        NOT_IMPLEMENTED
+    }
+
+    // remove entries close to zero
+    void RemoveNoise( const T& tol )
+    {
+        this->noalias() = this->unaryExpr( removeNoise_helper( tol ) );
+    }
+
+    // sorts rows of matrix w.r.t. values in col j.
+    void SortByColumn( const index_t j )
+    {
+        // GISMO_ASSERT( j < this->cols(), "Invalid column." );
+
+        index_t lastSwapDone = this->rows() - 1;
+        index_t lastCheckIdx = lastSwapDone;
+
+        bool didSwap;
+        igaMatrix<T> tmp( 1, this->cols() );
+        do
+        { // caution! A stable sort algorithm is needed here for lexSortColumns function below
+            didSwap = false;
+            lastCheckIdx = lastSwapDone;
+
+            for ( index_t i = 0; i < lastCheckIdx; i++ )
+                if ( this->coeff( i, j ) > this->coeff( i + 1, j ) )
+                {
+                    tmp.row( 0 ) = this->row( i );
+                    this->row( i ) = this->row( i + 1 );
+                    this->row( i + 1 ) = tmp.row( 0 );
+
+                    didSwap = true;
+                    lastSwapDone = i;
+                }
+        } while ( didSwap );
+    }
+
+    string PrintSparsity() const
+    {
+        ostringstream os;
+        os << ", sparsity: " << std::fixed << setprecision( 2 ) << "nnz: " << this->size()
+           << (double)100 * ( this->array() != 0 ).count() / this->size() << '%' << "\n";
+        for ( index_t i = 0; i != this->rows(); ++i )
+        {
+            for ( index_t j = 0; j != this->cols(); ++j )
+                os << ( 0 == this->coeff( i, j ) ? "\u00B7" : "x" );
+            os << "  " << ( this->row( i ).array() != 0 ).count() << "\n";
+        }
+        return os.str();
+    }
+
+    // return the Kronecker product of this with other
+    template <typename OtherDerived>
+    igaMatrix<T, -1, -1, _Options> Kronecker( const Eigen::MatrixBase<OtherDerived>& other ) const
+    {
+        const index_t r = this->rows(), c = this->cols();
+        const index_t ro = other.rows(), co = other.cols();
+        igaMatrix<T, -1, -1, _Options> result( r * ro, c * co );
+        for ( index_t i = 0; i != r; ++i )
+            for ( index_t j = 0; j != c; ++j )
+                result.block( i * ro, j * ro, ro, co ) = this->coeff( i, j ) * other;
+        return result;
+    }
+    // returns the Khatri-Rao product of this with other
+    template <typename OtherDerived>
+    igaMatrix<T, -1, -1, _Options> KhatriRao( const Eigen::MatrixBase<OtherDerived>& other ) const
+    {
+        const index_t r = this->rows(), c = this->cols();
+        const index_t ro = other.rows();
+        // GISMO_ASSERT( c == other.cols(), "Column sizes do not match." );
+        igaMatrix<T, -1, -1, _Options> result( r * ro, c );
+        for ( index_t j = 0; j != c; ++j )      // for all cols
+            for ( index_t i = 0; i != ro; ++i ) // for all rows
+                result.block( i * r, j, r, 1 ) = this->coeff( i, j ) * other.col( j );
+        return result;
+    }
 };
 
 } // namespace matrix

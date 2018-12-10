@@ -4,7 +4,7 @@ project(IGA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -pedantic -Wextra")
-set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
+# set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
 
 message("Generator is set to ${CMAKE_GENERATOR}")
 
