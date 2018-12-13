@@ -30,8 +30,8 @@ public:
     // unique pointer for igaVector
     using uPtr = unique_ptr<igaVector>;
 
-    using Ref = Eigen::Ref<Base> Ref;
+    // using Ref = Eigen::Ref<Base> Ref;
 
-    using ConstRef = const Eigen::Ref<const Base>;
+    // using ConstRef = const Eigen::Ref<const Base>;
 };
 } // namespace matrix

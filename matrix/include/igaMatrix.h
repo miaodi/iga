@@ -6,14 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
-
-#define NOT_IMPLEMENTED                                                                                   \
-    {                                                                                                     \
-        std::stringstream _m_;                                                                            \
-        _m_ << "NOT IMPLEMENTED: " << __FUNCTION__ << " in " << __FILE__ << ", line " << __LINE__ << "\n" \
-            << typeid( *this ).name();                                                                    \
-        throw std::runtime_error( _m_.str() );                                                            \
-    }
+#include <igaDebug.h>
 
 namespace matrix
 {
@@ -224,7 +217,7 @@ public:
 
     void duplicateRow( index_t k )
     {
-        NOT_IMPLEMENTED
+        IGA_NOT_IMPLEMENTED
     }
 
     // remove entries close to zero

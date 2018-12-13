@@ -18,11 +18,15 @@ set(EIGEN_INC_DIR ${PROJECT_SOURCE_DIR}/deps/eigen)
 set(CONFIGURATION_INC_DIR ${PROJECT_SOURCE_DIR}/configuration)
 message("Eigen is found in ${EIGEN_INC_DIR}")
 set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR} ${CONFIGURATION_INC_DIR})
-set(IGA_LIBS matrix_lib)
+
 
 include_directories(${IGA_INCLUDE_DIRS})
 
 add_subdirectory(matrix)
+
+add_subdirectory(basis)
+
+set(IGA_LIBS matrix_lib basis_lib)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
