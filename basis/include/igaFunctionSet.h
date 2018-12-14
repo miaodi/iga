@@ -21,11 +21,11 @@ public:
     using dim_t = pair<index_t, index_t>;
 
 public:
-    igaFunctionSet();
+    igaFunctionSet() = default;
 
-    igaFunctionSet( const igaFunctionSet& );
+    igaFunctionSet( const igaFunctionSet& ) = default;
 
-    virtual ~igaFunctionSet();
+    virtual ~igaFunctionSet() = default;
 
     // returns function set on given patch
     virtual const igaFunctionSet& Piece( const index_t patch_index )
@@ -70,12 +70,12 @@ public:
     }
 
     // evaluates the function(s)'s second order derivatives at each points.
-    virtual void DerivInto2( const igaMatrix<T>& u, igaMatrix<T>& evaluations_of_each_point ) const;
+    virtual void Deriv2Into( const igaMatrix<T>& u, igaMatrix<T>& evaluations_of_each_point ) const;
 
     igaMatrix<T> Deriv2( const igaMatrix<T>& u ) const
     {
         igaMatrix<T> eoep;
-        this->DerivInto( u, eoep );
+        this->Deriv2Into( u, eoep );
         return eoep;
     }
 
@@ -98,7 +98,10 @@ public:
     }
 
     // number of functions
-    virtual index_t Size() const = 0;
+    virtual index_t Size() const
+    {
+        IGA_NOT_IMPLEMENTED
+    }
 
     // number of pieces
     virtual index_t NumPieces() const
