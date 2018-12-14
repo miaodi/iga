@@ -85,6 +85,13 @@ public:
     {
     }
 
+    template <typename OtherDerived>
+    igaMatrix& operator=( const Eigen::MatrixBase<OtherDerived>& other )
+    {
+        this->Base::operator=( other );
+        return *this;
+    }
+
     /// This constructor allows constructing a gsMatrix from Eigen expressions
     template <typename OtherDerived>
     igaMatrix( const Eigen::EigenBase<OtherDerived>& other ) : Base( other )
@@ -216,6 +223,7 @@ public:
 
     void duplicateRow( index_t k )
     {
+        IGA_UNUSED_PARAMETER( k )
         IGA_NOT_IMPLEMENTED
     }
 

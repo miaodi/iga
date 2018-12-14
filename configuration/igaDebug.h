@@ -135,4 +135,6 @@ inline void exit_unless( bool a, const char* mesg = "exit_unless has exited" )
         }                                                                                                          \
     } while ( 0 );
 
+#define IGA_UNUSED_PARAMETER( expr ) do { (void)(expr); } while (0);
+
 } // namespace util

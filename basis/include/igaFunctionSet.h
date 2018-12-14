@@ -30,6 +30,7 @@ public:
     // returns function set on given patch
     virtual const igaFunctionSet& Piece( const index_t patch_index )
     {
+        IGA_UNUSED_PARAMETER( patch_index )
         return *this;
     }
 
