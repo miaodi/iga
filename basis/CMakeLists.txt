@@ -7,7 +7,8 @@ set(BASIS_LIB_SRC_DIR src)
 include_directories(${BASIS_LIB_HEADERS_DIR})
 
 add_library(basis_lib SHARED ${BASIS_LIB_SRC_DIR}/igaFunctionSet.cpp
-                        ${BASIS_LIB_SRC_DIR}/igaFunction.cpp)
+                        ${BASIS_LIB_SRC_DIR}/igaFunction.cpp
+                        ${BASIS_LIB_SRC_DIR}/igaBasis.cpp)
 
 target_link_libraries(basis_lib matrix_lib)
 
