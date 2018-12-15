@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -W -Wall -pedantic -Wextra")
 # set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING "" FORCE)
 
-message("Generator is set to ${CMAKE_GENERATOR}")
 
 # disable insource build
 if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")

@@ -230,7 +230,7 @@ public:
     // remove entries close to zero
     void RemoveNoise( const T& tol )
     {
-        this->noalias() = this->unaryExpr( removeNoise_helper( tol ) );
+        this->noalias() = this->unaryExpr( removeNoise_helper<T>( tol ) );
     }
 
     // sorts rows of matrix w.r.t. values in col j.

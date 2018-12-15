@@ -1,8 +1,8 @@
+#include <config.h>
 #include <igaDebug.h>
 #include <igaVector.h>
 #include <iostream>
 #include <vector>
-#include <config.h>
 using namespace matrix;
 using namespace std;
 using namespace util;
@@ -18,7 +18,10 @@ int main()
         }
     }
 
-    c.blockTransposeInPlace( 2 );
-    cout << c << endl;
+    c.BlockTransposeInPlace( 2 );
+
+    igaVector<double> aa = MatrixXd::Random( 5, 1 );
+    cout << (aa.Last()) << endl;
+    cout << aa << endl;
     return 0;
 }

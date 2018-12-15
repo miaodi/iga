@@ -137,7 +137,7 @@ public:
     {
         return *( this->data() + this->size() - 1 );
     }
-    T& At()
+    T& Last()
     {
         return *( this->data() + this->size() - 1 );
     }

@@ -10,7 +10,7 @@ void igaFunction<T>::DerivInto( const igaMatrix<T>& u, igaMatrix<T>& result ) co
     const index_t domain_dim = DomainDim();
     const index_t target_dim = TargetDim();
     const index_t num_pts = u.cols();
-    cont T h_size( 1e-6 );
+    const T h_size( 1e-6 );
     igaVector<T> delta( domain_dim );
     igaVector<T> tmp( target_dim );
 
@@ -39,6 +39,12 @@ void igaFunction<T>::DerivInto( const igaMatrix<T>& u, igaMatrix<T>& result ) co
 }
 
 template <typename T>
+void igaFunction<T>::Deriv2Into( const igaMatrix<T>& u, igaMatrix<T>& result ) const
+{
+    IGA_NOT_IMPLEMENTED
+}
+
+template <typename T>
 void igaFunction<T>::JacobianInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const
 {
     IGA_ASSERT( u.rows() == DomainDim() );
@@ -49,6 +55,62 @@ void igaFunction<T>::JacobianInto( const igaMatrix<T>& u, igaMatrix<T>& result )
     const index_t d = DomainDim();         // dimension of domain
     result.resize( d, result.size() / d ); // transposed Jacobians
     result.BlockTransposeInPlace( TargetDim() );
+}
+
+template <typename T>
+igaMatrix<T> igaFunction<T>::Jacobian( const igaMatrix<T>& u ) const
+{
+    igaMatrix<T> result;
+    this->jacobian_into( u, result );
+    return result;
+}
+
+template <typename T>
+bool igaFunction<T>::NewtonRaphson( const igaVector<T>& value, igaVector<T>& arg, bool has_support, const T tol, int max_loop, T damping_factor ) const
+{
+    const index_t n = TargetDim();
+
+    IGA_ASSERT( value.rows() == n )
+
+    const bool same_dimension = ( n == DomainDim() );
+
+    igaMatrix<T> delta, jac, supp;
+    if ( has_support )
+        supp = Support();
+
+    int iter = 0;
+
+    do
+    {
+        // clamp value to the internal of support
+        if ( has_support )
+            arg = arg.cwiseMax( supp.col( 0 ) ).cwiseMin( supp.col( 1 ) );
+
+        // compute residual: value - f(arg)
+        EvalInto( arg, delta );
+        delta = value - delta;
+
+        if ( delta.norm() <= tol )
+        {
+            return true;
+        }
+
+        // compute Jacobian
+        JacobianInto( arg, jac );
+
+        // Solve for next update
+        if ( same_dimension )
+            delta = jac.partialPivLu().solve( delta );
+        else // use pseudo-inverse
+            delta = jac.colPivHouseholderQr().solve( igaMatrix<T>::Identity( n, n ) ) * delta;
+
+        // update arg with damping factor
+        arg += damping_factor * delta;
+
+    } while ( ++iter <= max_loop );
+
+    // no solution found within max_loop iterations
+    return false;
 }
 
 template <>
