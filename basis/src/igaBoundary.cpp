@@ -60,6 +60,11 @@ BoxSide BoxSideFn::GetLastBoxSide( const index_t dim )
     return BoxSide( 2 * dim );
 }
 
+bool operator==( const BoxSide& lhs, const BoxSide& rhs )
+{
+    return lhs.mSide == rhs.mSide;
+}
+
 /// Print (as string) a box side
 std::ostream& operator<<( std::ostream& os, const BoxSide& o )
 {

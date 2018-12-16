@@ -5,6 +5,40 @@
 using namespace basis;
 using namespace matrix;
 
+TEST( igaBoundary, BoxSide_Direction )
+{
+    BoxSide bc1( 1 );
+    EXPECT_EQ( bc1.Direction(), 0 );
+
+    BoxSide bc2( 2 );
+    EXPECT_EQ( bc2.Direction(), 0 );
+
+    BoxSide bc3( 3 );
+    EXPECT_EQ( bc3.Direction(), 1 );
+
+    BoxSide bc4( 4 );
+    EXPECT_EQ( bc4.Direction(), 1 );
+}
+
+TEST( igaBoundary, BoxSide_operators )
+{
+    BoxSide bs( 1 );
+    ++bs;
+    EXPECT_TRUE( bs == Boundary::Side::East );
+    ++bs;
+    EXPECT_TRUE( bs == Boundary::Side::South );
+    ++bs;
+    EXPECT_TRUE( bs == Boundary::Side::North );
+
+    BoxSide bs1( 4 );
+    --bs1;
+    EXPECT_TRUE( bs1 == Boundary::Side::South );
+    --bs1;
+    EXPECT_TRUE( bs1 == Boundary::Side::East );
+    --bs1;
+    EXPECT_TRUE( bs1 == Boundary::Side::West );
+}
+
 TEST( igaBoundary, BoxCorner_ParametersInto )
 {
     igaVector<bool> param;
@@ -28,12 +62,6 @@ TEST( igaBoundary, BoxCorner_ParametersInto )
     bc4.ParametersInto( 2, param );
     EXPECT_EQ( param( 0 ), 1 );
     EXPECT_EQ( param( 1 ), 1 );
-}
-
-TEST( IndependentMethod, ResetsToZero2 )
-{
-    int i = 0;
-    EXPECT_EQ( 0, i );
 }
 
 // The fixture for testing class Project1. From google test primer.

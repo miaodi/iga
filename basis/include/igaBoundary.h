@@ -112,6 +112,8 @@ public:
         return *this;
     }
 
+    friend bool operator==( const BoxSide& lhs, const BoxSide& rhs );
+
 protected:
     Boundary::Side mSide;
 };
