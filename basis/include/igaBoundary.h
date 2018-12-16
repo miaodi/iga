@@ -117,6 +117,7 @@ public:
 protected:
     Boundary::Side mSide;
 };
+
 // print BoxSide object
 std::ostream& operator<<( std::ostream& os, const BoxSide& o );
 
@@ -148,12 +149,18 @@ public:
     }
 
 public:
-    void ParametersInto( index_t dim, igaVector<bool>& p ) const
+    void ParametersInto( const index_t dim, igaVector<bool>& p ) const
     {
         IGA_ASSERT( dim == 2 )
         p.resize( dim );
         BoxCornerFn::East( mCorner ) ? p( 0 ) = true : p( 0 ) = false;
         BoxCornerFn::North( mCorner ) ? p( 1 ) = true : p( 1 ) = false;
+    }
+    igaVector<bool> Parameters( const index_t dim ) const
+    {
+        igaVector<bool> res;
+        ParametersInto(dim, res);
+        return res;
     }
 
 protected:

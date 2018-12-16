@@ -12,6 +12,7 @@ if("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
    message(FATAL_ERROR "In-source builds are not permitted. \n How to fix this:\n 1. Type \nmake cleancmake\nto remove garbage CMake files. \n\n 2. Please make a separate folder for building, otherwise typing \nmake\nthat will create a ./build folder and will compile in that folder. ")
 endif()
 
+message("Cmake generator is set to ${CMAKE_GENERATOR}")
 
 set(EIGEN_INC_DIR ${PROJECT_SOURCE_DIR}/deps/eigen)
 set(CONFIGURATION_INC_DIR ${PROJECT_SOURCE_DIR}/configuration)
