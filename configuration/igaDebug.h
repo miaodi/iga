@@ -70,7 +70,7 @@ inline void exit_unless( bool a, const char* mesg = "exit_unless has exited" )
         throw E( sstream.str() );                                                                                               \
     } while ( 0 );
 
-#define COUT_THROW_IGXEXCEPTION( A )                                                                                            \
+#define COUT_THROW_IGA_EXCEPTION( A )                                                                                            \
     do                                                                                                                          \
     {                                                                                                                           \
         std::stringstream sstream;                                                                                              \

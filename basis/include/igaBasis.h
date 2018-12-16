@@ -1,4 +1,5 @@
 #pragma once
+#include <igaDomainIterator.hpp>
 #include <igaFunctionSet.h>
 
 namespace basis
@@ -23,6 +24,7 @@ public:
     using sPtr = shared_ptr<igaBasis>;
     using uPtr = unique_ptr<igaBasis>;
     using scalar_t = T;
+    using domainIter = unique_ptr<igaDomainIterator<T>>;
 
 public:
     igaBasis() = default;
@@ -34,6 +36,8 @@ public:
     virtual ~igaBasis() = default;
 
 public:
+    index_t Dim() const;
+
     const igaBasis<T>& Piece( const index_t patch_index ) const
     {
         IGA_REQUIRE( patch_index == 0 )
@@ -49,5 +53,7 @@ public:
         this->EvalSingleInto( i, u, result );
         return result;
     }
+
+    virtual domainIter MakeDomainIterator() const;
 };
 } // namespace basis

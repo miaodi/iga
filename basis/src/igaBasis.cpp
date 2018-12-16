@@ -19,7 +19,7 @@ void igaBasisFn<T>::LinearCombinationInto( const igaMatrix<T>& coefs,
 
     // for each evaluation point
     for ( index_t pt = 0; pt < num_pts; ++pt )
-    {   
+    {
         // for each activated basis function
         for ( index_t active = 0; active < active_indices.rows(); ++active )
         {
@@ -36,6 +36,12 @@ void igaBasisFn<T>::LinearCombinationInto( const igaMatrix<T>& coefs,
 
 template <typename T>
 void igaBasis<T>::EvalSingleInto( const index_t, const igaMatrix<T>&, igaMatrix<T>& ) const
+{
+    IGA_NOT_IMPLEMENTED
+}
+
+template <typename T>
+typename igaBasis<T>::domainIter igaBasis<T>::MakeDomainIterator() const
 {
     IGA_NOT_IMPLEMENTED
 }
