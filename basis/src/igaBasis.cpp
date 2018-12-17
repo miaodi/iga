@@ -46,6 +46,13 @@ typename igaBasis<T>::domainIter igaBasis<T>::MakeDomainIterator() const
     IGA_NOT_IMPLEMENTED
 }
 
+template <typename T>
+typename igaBasis<T>::domainIter igaBasis<T>::MakeDomainIterator( const BoxSide& s ) const
+{
+    IGA_UNUSED_PARAMETER( s )
+    IGA_NOT_IMPLEMENTED
+}
+
 template <>
 class igaBasis<real_t>;
 } // namespace basis

@@ -84,7 +84,7 @@ public:
     virtual void EvalAllDersInto( const igaMatrix<T>& u, int p, std::vector<igaMatrix<T>>& result ) const;
 
     // dimension of the (source) domain
-    virtual int DomainDim() const = 0;
+    virtual int DomainDim() const {IGA_NOT_IMPLEMENTED};
 
     // dimension of the (target) domain
     virtual int TargetDim() const
@@ -116,6 +116,8 @@ public:
         os << "gsFunctionSet\n";
         return os;
     }
+
+    virtual uPtr Clone() = 0;
 };
 
 // print (as string) operator to be used by all derived classes

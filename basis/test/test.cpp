@@ -30,13 +30,30 @@ TEST( igaBoundary, BoxSide_operators )
     ++bs;
     EXPECT_TRUE( bs == Boundary::Side::North );
 
-    BoxSide bs1( 4 );
-    --bs1;
-    EXPECT_TRUE( bs1 == Boundary::Side::South );
-    --bs1;
-    EXPECT_TRUE( bs1 == Boundary::Side::East );
-    --bs1;
-    EXPECT_TRUE( bs1 == Boundary::Side::West );
+    --bs;
+    EXPECT_TRUE( bs == Boundary::Side::South );
+    --bs;
+    EXPECT_TRUE( bs == Boundary::Side::East );
+    --bs;
+    EXPECT_TRUE( bs == Boundary::Side::West );
+}
+
+TEST( igaBoundary, BoxCorner_operators )
+{
+    BoxCorner bc( 1 );
+    ++bc;
+    EXPECT_TRUE( bc == Boundary::Corner::SouthEast );
+    ++bc;
+    EXPECT_TRUE( bc == Boundary::Corner::NorthWest );
+    ++bc;
+    EXPECT_TRUE( bc == Boundary::Corner::NorthEast );
+
+    --bc;
+    EXPECT_TRUE( bc == Boundary::Corner::NorthWest );
+    --bc;
+    EXPECT_TRUE( bc == Boundary::Corner::SouthEast );
+    --bc;
+    EXPECT_TRUE( bc == Boundary::Corner::SouthWest );
 }
 
 TEST( igaBoundary, BoxCorner_ParametersInto )

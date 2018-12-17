@@ -54,6 +54,10 @@ public:
         return result;
     }
 
+    // create a domain iterator which points to the first element of this basis
     virtual domainIter MakeDomainIterator() const;
+
+    // create a boundary domain iterator which points to the first element of the given side basis
+    virtual domainIter MakeDomainIterator(const BoxSide & s) const;
 };
 } // namespace basis

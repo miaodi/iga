@@ -1,7 +1,7 @@
 #pragma once
+#include <igaBoundary.h>
 #include <igaVector.h>
 #include <memory>
-
 namespace basis
 {
 using namespace std;
@@ -19,8 +19,8 @@ public:
 
 public:
     // constructor
-    explicit igaDomainIterator( igaBasis<T>& basis )
-        : mBasis{basis}, mCenter{igaVector<T>::Zero( basis.Dim() )}, mLast{true}
+    explicit igaDomainIterator( igaBasis<T>& basis, const BoxSide& side = Boundary::Side::None )
+        : mBasis{basis}, mCenter{igaVector<T>::Zero( basis.Dim() )}, mLast{true}, mBoxSide{side}
     {
     }
 
@@ -81,6 +81,8 @@ protected:
     igaVector<T> mCenter;
     // status of the iterator
     bool mLast;
+
+    BoxSide mBoxSide;
 };
 
 } // namespace basis

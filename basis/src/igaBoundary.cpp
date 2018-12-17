@@ -33,6 +33,11 @@ Boundary::Side BoxSideFn::Index( const index_t ind )
     }
 }
 
+index_t BoxSideFn::DirAndPar( const index_t dir, const bool par )
+{
+    return par ? 2 * dir + 2 : 2 * dir + 1;
+}
+
 index_t BoxSideFn::Side( const Boundary::Side side )
 {
     return to_underlying( side );
@@ -124,6 +129,11 @@ Boundary::Corner BoxCornerFn::Index( const index_t ind )
     }
 }
 
+index_t BoxCornerFn::Corner( const Boundary::Corner corner )
+{
+    return to_underlying( corner );
+}
+
 bool BoxCornerFn::East( const Boundary::Corner corner )
 {
     if ( corner == Boundary::Corner::SouthEast || corner == Boundary::Corner::NorthEast )
@@ -145,5 +155,21 @@ bool BoxCornerFn::North( const Boundary::Corner corner )
     {
         return false;
     }
+}
+
+BoxCorner BoxCornerFn::GetFirstBoxCorner( const index_t dim )
+{
+    IGA_UNUSED_PARAMETER( dim )
+    return BoxCorner( 1 );
+}
+
+BoxCorner BoxCornerFn::GetLastBoxCorner( const index_t dim )
+{
+    return BoxCorner( 1 << dim );
+}
+
+bool operator==( const BoxCorner& lhs, const BoxCorner& rhs )
+{
+    return lhs.mCorner == rhs.mCorner;
 }
 } // namespace basis

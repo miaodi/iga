@@ -35,9 +35,9 @@ int main()
     cout << ( 1 << 0 ) << endl;
     cout << ( 1 << 1 ) << endl;
     cout << ( 1 << 2 ) << endl;
-    igaVector<bool> param( 2 );
-    for ( int i = 0; i < 2; ++i )
-        param( i ) = ( ( 4 - 1 ) >> i ) & 1;
-    cout<<param<<endl;
+    // igaVector<bool> param( 2 );
+    // for ( int i = 0; i < 2; ++i )
+    //     param( i ) = ( ( 4 - 1 ) >> i ) & 1;
+    // cout<<param<<endl;
     return 0;
 }

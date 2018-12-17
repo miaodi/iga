@@ -3,6 +3,12 @@
 namespace basis
 {
 template <typename T>
+void igaFunction<T>::EvalInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const
+{
+    IGA_NOT_IMPLEMENTED
+}
+
+template <typename T>
 void igaFunction<T>::DerivInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const
 {
     IGA_ASSERT( u.rows() == DomainDim() );

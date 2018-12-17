@@ -31,13 +31,20 @@ public:
         return static_cast<const igaFunction&>( this->Piece( patch_index ) );
     }
 
+    virtual void ActiveInto( const igaMatrix<T>& u, igaMatrix<index_t>& indices_of_each_point ) const override
+    {
+        indices_of_each_point.setConstant( 1, u.cols(), 0 );
+    }
+
     // evaluate the comp's component in targetDim at point(s) u into result
     virtual void EvalComponentInto( const igaMatrix<T>& u, const index_t comp, igaMatrix<T>& result ) const;
 
-    // evaluate derivatives of the function at point(s) u into result, central differences with h=1e-6. Override is required for accuracy
-    virtual void DerivInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const;
+    virtual void EvalInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const override;
 
-    virtual void Deriv2Into( const igaMatrix<T>& u, igaMatrix<T>& result ) const;
+    // evaluate derivatives of the function at point(s) u into result, central differences with h=1e-6. Override is required for accuracy
+    virtual void DerivInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const override;
+
+    virtual void Deriv2Into( const igaMatrix<T>& u, igaMatrix<T>& result ) const override;
 
     // evaluate jacobian at each point(s)
     void JacobianInto( const igaMatrix<T>& u, igaMatrix<T>& result ) const;

@@ -33,6 +33,7 @@ class BoxSideFn
 {
 public:
     static Boundary::Side Index( const index_t );
+    static index_t DirAndPar( const index_t, const bool );
     static index_t Side( const Boundary::Side );
     static Boundary::Side GetFirstBoundarySide( const index_t dim = 1 );
     static Boundary::Side GetLastBoundarySide( const index_t dim );
@@ -48,6 +49,10 @@ public:
     }
 
     BoxSide( const index_t ind ) : mSide{BoxSideFn::Index( ind )}
+    {
+    }
+
+    BoxSide( const index_t dir, const index_t par ) : mSide{BoxSideFn::Index( BoxSideFn::DirAndPar( dir, par ) )}
     {
     }
 
@@ -121,18 +126,21 @@ protected:
 // print BoxSide object
 std::ostream& operator<<( std::ostream& os, const BoxSide& o );
 
+class BoxCorner;
+
 class BoxCornerFn
 {
 public:
     static Boundary::Corner Index( const index_t );
-    static index_t Corner( const Boundary::Side );
+    static index_t Corner( const Boundary::Corner );
     static bool East( const Boundary::Corner );
     static bool North( const Boundary::Corner );
 
     // static Boundary::Side GetFirstBoundarySide( const index_t dim = 1 );
     // static Boundary::Side GetLastBoundarySide( const index_t dim );
-    // static BoxSide GetFirstBoxSide( const index_t dim = 1 );
-    // static BoxSide GetLastBoxSide( const index_t dim );
+
+    static BoxCorner GetFirstBoxCorner( const index_t dim = 1 );
+    static BoxCorner GetLastBoxCorner( const index_t dim );
 };
 
 class BoxCorner
@@ -149,6 +157,7 @@ public:
     }
 
 public:
+    // return a dim dimensional vector of either corner at begin or end of each direction
     void ParametersInto( const index_t dim, igaVector<bool>& p ) const
     {
         IGA_ASSERT( dim == 2 )
@@ -159,9 +168,38 @@ public:
     igaVector<bool> Parameters( const index_t dim ) const
     {
         igaVector<bool> res;
-        ParametersInto(dim, res);
+        ParametersInto( dim, res );
         return res;
     }
+
+    // return all BoxSide that intersection with this corner
+    void GetContainingSides( const index_t dim, std::vector<BoxSide>& sides ) const
+    {
+        IGA_ASSERT( dim == 2 )
+        sides.resize( dim );
+        igaVector<bool> par;
+        ParametersInto( dim, par );
+        for ( int i = 0; i < dim; ++i )
+        {
+            sides[i] = BoxSide( i, par( i ) );
+        }
+    }
+
+    // Increment & Decrement
+    BoxCorner& operator++()
+    {
+        mCorner = BoxCornerFn::Index( BoxCornerFn::Corner( mCorner ) + 1 );
+        return *this;
+    }
+
+    BoxCorner& operator--()
+    {
+        mCorner = BoxCornerFn::Index( BoxCornerFn::Corner( mCorner ) - 1 );
+        return *this;
+    }
+
+    
+    friend bool operator==( const BoxCorner& lhs, const BoxCorner& rhs );
 
 protected:
     Boundary::Corner mCorner;
