@@ -2,6 +2,8 @@
 #include <config.h>
 #include <igaDebug.h>
 #include <igaVector.h>
+#include <vector>
+
 
 // currently, I only consider 2D parametric domain
 namespace basis
