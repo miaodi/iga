@@ -27,8 +27,9 @@ message("Cmake generator is set to ${CMAKE_GENERATOR}")
 
 set(EIGEN_INC_DIR ${PROJECT_SOURCE_DIR}/deps/eigen)
 set(CONFIGURATION_INC_DIR ${PROJECT_SOURCE_DIR}/configuration)
+set(UTIL_INC_DIR ${PROJECT_SOURCE_DIR}/util)
 message("Eigen is found in ${EIGEN_INC_DIR}")
-set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR} ${CONFIGURATION_INC_DIR})
+set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR} ${CONFIGURATION_INC_DIR} ${UTIL_INC_DIR})
 
 # find_package(OpenMP)
 # if (OPENMP_FOUND)
@@ -37,7 +38,7 @@ set(IGA_INCLUDE_DIRS ${EIGEN_INC_DIR} ${CONFIGURATION_INC_DIR})
 #     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 # endif()
 
-
+# include given directories to all target and subdirectories
 include_directories(${IGA_INCLUDE_DIRS})
 
 enable_testing()

@@ -1,8 +1,10 @@
+#include <common_util.h>
 #include <config.h>
 #include <igaBoundary.h>
 #include <igaDebug.h>
 #include <igaVector.h>
 #include <iostream>
+#include <memoizer.h>
 #include <vector>
 
 using namespace matrix;
@@ -39,5 +41,37 @@ int main()
     // for ( int i = 0; i < 2; ++i )
     //     param( i ) = ( ( 4 - 1 ) >> i ) & 1;
     // cout<<param<<endl;
+    int kt = 500000;
+    int s = 6;
+    auto mGramian = memo::memoize( GramianInverse<double> );
+
+    // TimerPrint( [kt, s]() {
+    //     for ( int k = 0; k < kt; k++ )
+    //     {
+    //         for ( int i = 0; i < s; i++ )
+    //         {
+    //             GramianInverse( i );
+    //         }
+    //     }
+    // } );
+
+    // TimerPrint( [kt, s, &mGramian]() {
+    //     for ( int k = 0; k < kt; k++ )
+    //     {
+    //         for ( int i = 0; i < s; i++ )
+    //         {
+    //             mGramian( i );
+    //         }
+    //     }
+    // } );
+    for ( int i = 0; i <= 10; i++ )
+    {
+        cout << AllBernstein( 2, 1.0 * i / 10 ).transpose() << endl;
+    }
+    igaMatrix<double> a;
+    igaMatrix<double> u( 1, 5 );
+    u<<0,.2,.4,.6,.8;
+    AllBernsteinInto( a, 3, u );
+    cout << a.transpose() << endl;
     return 0;
 }

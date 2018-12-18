@@ -62,6 +62,16 @@ public:
         return this->data() + this->size();
     }
 
+    T operator[]( const index_t i ) const
+    {
+        return *( this->data() + i );
+    }
+
+    T& operator[]( const index_t i )
+    {
+        return *( this->data() + i );
+    }
+
 public:
     igaVector() : igaBase()
     {

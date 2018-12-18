@@ -110,6 +110,23 @@ public:
     {
     }
 
+    std::pair<index_t, index_t> Dim() const
+    {
+        return std::make_pair( this->rows(), this->cols() );
+    }
+
+    /// returns the i-th element of the vectorization of the matrix
+    T At( index_t i ) const
+    {
+        return *( this->data() + i );
+    }
+
+    /// returns the i-th element of the vectorization of the matrix
+    T& At( index_t i )
+    {
+        return *( this->data() + i );
+    }
+
     // create submatrix from index container. !! now can be done by operator() directly
     template <typename IndexContainer>
     void Submatrix( const IndexContainer& rowInd, const IndexContainer& colInd, igaMatrix<T>& result ) const
