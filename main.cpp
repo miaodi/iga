@@ -64,14 +64,14 @@ int main()
     //         }
     //     }
     // } );
-    for ( int i = 0; i <= 10; i++ )
-    {
-        cout << AllBernstein( 2, 1.0 * i / 10 ).transpose() << endl;
-    }
-    igaMatrix<double> a;
+
+    igaMatrix<double> a, b;
     igaMatrix<double> u( 1, 5 );
-    u<<0,.2,.4,.6,.8;
-    AllBernsteinInto( a, 3, u );
-    cout << a.transpose() << endl;
+    u << 0, .2, .4, .6, .8;
+    AllBernsteinInto( a, 2, u );
+    AllBernsteinInto( b, 1, u );
+    igaMatrix<double> op;
+    BernsteinDerivOpInto( 4, 0, op );
+    cout<<op<<endl;
     return 0;
 }

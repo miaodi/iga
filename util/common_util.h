@@ -6,14 +6,19 @@
 #include <igaVector.h>
 #include <iostream>
 #include <map>
-#include <mutex>
 #include <tuple>
-#include <type_traits>
 
 namespace util
 {
 using namespace std;
 using namespace matrix;
+
+template <typename T>
+
+T Flip( const T input )
+{
+    return input % 2 == 0 ? 1 : -1;
+}
 
 int Factorial( const int n )
 {
@@ -116,45 +121,57 @@ index_t FindSpan( const KV_type& knot_vector, const int deg, const T u )
 }
 
 template <typename T>
-void AllBernsteinInto( igaVector<T>& eval, const index_t p, const T u )
-{
-    IGA_ASSERT( u >= 0 && u <= 1 )
-    eval.resize( p + 1, 1 );
-    eval( 0 ) = 1;
-    T u1 = 1 - u;
-    T saved, temp;
-    int j, k;
-    for ( j = 1; j <= p; ++j )
-    {
-        saved = 0;
-        for ( k = 0; k < j; ++k )
-        {
-            temp = eval( k );
-            eval( k ) = saved + u1 * temp;
-            saved = u * temp;
-        }
-        eval( j ) = saved;
-    }
-}
-
-template <typename T>
 void AllBernsteinInto( igaMatrix<T>& evals, const index_t p, const igaMatrix<T>& u )
 {
     IGA_ASSERT( u.rows() == 1 )
     evals.resize( p + 1, u.cols() );
-    for ( int i = 0; i < u.cols(); ++i )
+    for ( int u_i = 0; u_i < u.cols(); ++u_i )
     {
-        Eigen::Map<Eigen::Matrix<T, Eigen::Dynamic, 1>> column( evals.data(), 3 );
-        AllBernsteinInto( column, p, u.At( i ) );
+        IGA_ASSERT( u( 0, u_i ) >= 0 && u( 0, u_i ) <= 1 )
+
+        evals( 0, u_i ) = 1;
+        T u1 = 1 - u( 0, u_i );
+        T saved, temp;
+        int j, k;
+        for ( j = 1; j <= p; ++j )
+        {
+            saved = 0;
+            for ( k = 0; k < j; ++k )
+            {
+                temp = evals( k, u_i );
+                evals( k, u_i ) = saved + u1 * temp;
+                saved = u( 0, u_i ) * temp;
+            }
+            evals( j, u_i ) = saved;
+        }
     }
 }
-
 template <typename T>
-igaMatrix<T> AllBernstein( const index_t p, const T u )
+igaMatrix<T> AllBernstein( const index_t p, const igaMatrix<T>& u )
 {
-    igaVector<T> eval;
+    igaMatrix<T> eval;
     AllBernsteinInto<T>( eval, p, u );
     return eval;
+}
+
+// construct the derivative operator for Bernstein basis s.t.
+//  B^p = op* B^(p-der)
+template <typename T>
+void BernsteinDerivOpInto( const index_t p, const index_t der, igaMatrix<T>& op )
+{
+    IGA_ASSERT( der <= p && der >= 0 )
+
+    op.resize( p + 1, p + 1 - der );
+
+    for ( int i = 0; i < p + 1; ++i )
+    {
+        for ( int k = max( 0, i + der - p ); k <= min( i, der ); ++k )
+        {
+            op( i, i - k ) = Flip( k + der ) * Binomial( der, k );
+        }
+    }
+    T coeff = Factorial( p ) / Factorial( p - der );
+    op *= coeff;
 }
 
 template <class Fn, class... Args>
@@ -166,6 +183,7 @@ chrono::duration<double> RTimer( Fn fn, Args... args )
     return end - start;
 }
 
+// print out time consumed by given lambda
 template <class Fn, class... Args>
 void TimerPrint( Fn fn, Args... args )
 {
@@ -175,4 +193,5 @@ void TimerPrint( Fn fn, Args... args )
     std::cout << cyang() << "test function took " << chrono::duration_cast<chrono::milliseconds>( end - start ).count()
               << " milliseconds\n";
 }
+
 } // namespace util

@@ -1,6 +1,6 @@
 project(basis)
 
-set(BASIS_LIB_HEADERS_DIR include)
+set(BASIS_LIB_HEADERS_DIR include tensor/include)
 
 set(BASIS_LIB_SRC_DIR src)
 
